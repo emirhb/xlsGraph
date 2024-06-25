@@ -79,31 +79,19 @@ class ChartTool {
             // for (let i = 1; i < parseInt(rowNum); i++) {
                 const data = JSON.parse(JSON.stringify(ser));
                 let d = data[0] || data;
-                d['c:idx'] = { $: { val: rowNum - 1 } };
-                d['c:order'] = { $: { val: rowNum - 1 } };
+                d['c:idx'] = { $: { val: parseInt(rowNum) - 1 } };
+                d['c:order'] = { $: { val: parseInt(rowNum) - 1 } };
                 if (opt.type !== 'scatter') {
-                    d['c:cat']['c:strRef']['c:f'] = sheetName + `!$${firstCol}$2:$${firstCol}$${(rowNum + 1)}`;
-                    d['c:val']['c:numRef']['c:f'] = sheetName + `!$${lastCol}$2:$${lastCol}$${(rowNum + 1)}`;
+                    d['c:cat']['c:strRef']['c:f'] = sheetName + `!$${firstCol}$2:$${firstCol}$${rowNum}`;
+                    d['c:val']['c:numRef']['c:f'] = sheetName + `!$${lastCol}$2:$${lastCol}$${rowNum}`;
                     if (opt.hasOwnProperty('data')) {
                         d['c:cat']['c:strRef']['c:strCache'] = this.buildCache(opt['data'][0], opt.labels);
-                        d['c:val']['c:numRef']['c:numCache'] = this.buildCache(opt['data'][rowNum], opt.labels);
+                        d['c:val']['c:numRef']['c:numCache'] = this.buildCache(opt['data'][parseInt(rowNum)], opt.labels);
                     }
                 }
                 else {
-                    d['c:xVal']['c:numRef']['c:f'] = sheetName + `!$${firstCol}$2:$${firstCol}$${(rowNum + 1)}`;
-                    d['c:yVal']['c:numRef']['c:f'] = sheetName + `!$${lastCol}$2:$${lastCol}$${(rowNum + 1)}`;
-                }
-                if (opt.rgbColors && opt.rgbColors[rowNum - 1] && (opt.type === 'line' || opt.type === 'bar')) {
-                    d['c:spPr']['a:ln']['a:solidFill']['a:srgbClr'].$.val = opt.rgbColors[rowNum - 1];
-                    if (d['c:spPr']['a:solidFill']) {
-                        d['c:spPr']['a:solidFill'] = {
-                            'a:srgbClr': {
-                                $: {
-                                    val: opt.rgbColors[rowNum - 1]
-                                }
-                            }
-                        };
-                    }
+                    d['c:xVal']['c:numRef']['c:f'] = sheetName + `!$${firstCol}$2:$${firstCol}$${rowNum}`;
+                    d['c:yVal']['c:numRef']['c:f'] = sheetName + `!$${lastCol}$2:$${lastCol}$${rowNum}`;
                 }
                 if (opt.type === 'line') {
                     d['c:spPr']['a:ln'].$.w = opt.lineWidth || 30000;
@@ -112,15 +100,11 @@ class ChartTool {
                     d['c:marker']['c:size'].$.val = ((_a = opt === null || opt === void 0 ? void 0 : opt.marker) === null || _a === void 0 ? void 0 : _a.size) || '4';
                     d['c:marker']['c:symbol'].$.val = ((_b = opt === null || opt === void 0 ? void 0 : opt.marker) === null || _b === void 0 ? void 0 : _b.shape) || 'circle';
                     delete d['c:marker']['c:spPr']['a:noFill'];
-                    if (opt.rgbColors && opt.rgbColors[rowNum - 1]) {
-                        d['c:marker']['c:spPr']['a:solidFill'] = { 'a:srgbClr': { $: { val: opt.rgbColors[rowNum - 1] } } };
-                        d['c:marker']['c:spPr']['a:ln']['a:solidFill']['a:srgbClr'].$.val = opt.rgbColors[rowNum - 1];
-                    }
                 }
                 if (opt.labels) {
                     d['c:tx'] = {
                         'c:strRef': {
-                            'c:f': sheetName + `!$A$${rowNum + 1}`
+                            'c:f': sheetName + `!$A$${parseInt(rowNum) + 1}`
                         }
                     };
                     if (opt.hasOwnProperty('data')) {
@@ -128,7 +112,7 @@ class ChartTool {
                             'c:ptCount': { $: { val: 1 } },
                             'c:pt': {
                                 $: { idx: 0 },
-                                'c:v': opt['data'][rowNum][0]
+                                'c:v': opt['data'][parseInt(rowNum)][0]
                             }
                         };
                     }
