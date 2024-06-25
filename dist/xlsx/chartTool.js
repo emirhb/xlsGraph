@@ -102,11 +102,11 @@ class ChartTool {
                     delete d['c:marker']['c:spPr']['a:noFill'];
                 }
                 if (opt.labels) {
-                    // d['c:tx'] = {
-                    //     'c:strRef': {
-                    //         'c:f': sheetName + `!$A$${parseInt(rowNum) + 1}`
-                    //     }
-                    // };
+                    d['c:tx'] = {
+                        'c:strRef': {
+                            'c:f': sheetName + `!$A$${parseInt(rowNum) + 1}`
+                        }
+                    };
                     if (opt.hasOwnProperty('data')) {
                         d['c:tx']['c:strRef']['c:strCache'] = {
                             'c:ptCount': { $: { val: 1 } },
