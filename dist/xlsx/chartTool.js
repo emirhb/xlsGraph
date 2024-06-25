@@ -82,16 +82,16 @@ class ChartTool {
                 d['c:idx'] = { $: { val: parseInt(rowNum) - 1 } };
                 d['c:order'] = { $: { val: parseInt(rowNum) - 1 } };
                 if (opt.type !== 'scatter') {
-                    d['c:cat']['c:strRef'] = sheetName + `!$${firstCol}$2:$${firstCol}$${rowNum}`; //['c:f']
-                    d['c:val']['c:numRef'] = sheetName + `!$${lastCol}$2:$${lastCol}$${rowNum}`; //['c:f']
+                    d['c:cat']['c:strRef']['c:f'] = sheetName + `!$${firstCol}$2:$${firstCol}$${rowNum}`;
+                    d['c:val']['c:numRef']['c:f'] = sheetName + `!$${lastCol}$2:$${lastCol}$${rowNum}`;
                     if (opt.hasOwnProperty('data')) {
                         d['c:cat']['c:strRef']['c:strCache'] = this.buildCache(opt['data'][0], opt.labels);
                         d['c:val']['c:numRef']['c:numCache'] = this.buildCache(opt['data'][parseInt(rowNum)], opt.labels);
                     }
                 }
                 else {
-                    d['c:xVal']['c:numRef'] = sheetName + `!$${firstCol}$2:$${firstCol}$${rowNum}`; //['c:f']
-                    d['c:yVal']['c:numRef'] = sheetName + `!$${lastCol}$2:$${lastCol}$${rowNum}`; //['c:f']
+                    d['c:xVal']['c:numRef']['c:f'] = sheetName + `!$${firstCol}$2:$${firstCol}$${rowNum}`;
+                    d['c:yVal']['c:numRef']['c:f'] = sheetName + `!$${lastCol}$2:$${lastCol}$${rowNum}`;
                 }
                 if (opt.type === 'line') {
                     d['c:spPr']['a:ln'].$.w = opt.lineWidth || 30000;
