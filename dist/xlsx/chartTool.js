@@ -64,8 +64,7 @@ class ChartTool {
                     const letterNum = parseInt(letter);
                     if (isNaN(letterNum)) {
                         lastCol += letter;
-                    }
-                    else {
+                    } else {
                         rowNum += letter;
                     }
                 });
@@ -83,16 +82,16 @@ class ChartTool {
                 d['c:idx'] = { $: { val: i - 1 } };
                 d['c:order'] = { $: { val: i - 1 } };
                 if (opt.type !== 'scatter') {
-                    d['c:cat']['c:strRef']['c:f'] = sheetName + `!$${firstCol}$1:$${firstCol}$${(i + 1)}`;
-                    d['c:val']['c:numRef']['c:f'] = sheetName + `!$${lastCol}$1:$${lastCol}$${(i + 1)}`;
+                    d['c:cat']['c:strRef']['c:f'] = sheetName + `!$${firstCol}$2:$${firstCol}$${(i + 1)}`;
+                    d['c:val']['c:numRef']['c:f'] = sheetName + `!$${lastCol}$2:$${lastCol}$${(i + 1)}`;
                     if (opt.hasOwnProperty('data')) {
                         d['c:cat']['c:strRef']['c:strCache'] = this.buildCache(opt['data'][0], opt.labels);
                         d['c:val']['c:numRef']['c:numCache'] = this.buildCache(opt['data'][i], opt.labels);
                     }
                 }
                 else {
-                    d['c:xVal']['c:numRef']['c:f'] = sheetName + `!$${firstCol}$1:$${firstCol}$${(i + 1)}`;
-                    d['c:yVal']['c:numRef']['c:f'] = sheetName + `!$${lastCol}$1:$${lastCol}$${(i + 1)}`;
+                    d['c:xVal']['c:numRef']['c:f'] = sheetName + `!$${firstCol}$2:$${firstCol}$${(i + 1)}`;
+                    d['c:yVal']['c:numRef']['c:f'] = sheetName + `!$${lastCol}$2:$${lastCol}$${(i + 1)}`;
                 }
                 if (opt.rgbColors && opt.rgbColors[i - 1] && (opt.type === 'line' || opt.type === 'bar')) {
                     d['c:spPr']['a:ln']['a:solidFill']['a:srgbClr'].$.val = opt.rgbColors[i - 1];
