@@ -107,7 +107,7 @@ class ChartTool {
                 if (opt.labels) {
                     d['c:tx'] = {
                         'c:strRef': {
-                            'c:f': sheetName + `!$A$${parseInt(rowNumLast) + 1}`
+                            'c:f': sheetName + `!$${firstCol}$${parseInt(rowNumFirst) - 1}`
                         }
                     };
                     if (opt.hasOwnProperty('data')) {
