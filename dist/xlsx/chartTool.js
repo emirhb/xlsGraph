@@ -124,9 +124,9 @@ class ChartTool {
                 if (!!readChart['c:chartSpace']['c:chart']['c:plotArea']['c:valAx'] && opt.type !== 'scatter') {
                     readChart['c:chartSpace']['c:chart']['c:plotArea']['c:valAx']['c:majorUnit'] = {};
                     readChart['c:chartSpace']['c:chart']['c:plotArea']['c:valAx']['c:minorUnit'] = {};
-                    // if (readChart['c:chartSpace']['c:chart']['c:legend']['c:layout']) {
-                    //     delete readChart['c:chartSpace']['c:chart']['c:legend']['c:layout'];
-                    // }
+                    if (readChart['c:chartSpace']['c:chart']['c:legend']['c:layout']) {
+                        delete readChart['c:chartSpace']['c:chart']['c:legend']['c:layout'];
+                    }
                 }
             // }
             return readChart;
