@@ -49,15 +49,18 @@ class ChartTool {
                 readChart['c:chartSpace']['c:chart']['c:title']['c:tx']['c:rich']['a:p']['a:r']['a:rPr'].$.sz = opt.title.size;
             }
             const chartType = `c:${opt.type}Chart`;
-            let rowNum = '';
+            let rowNumFirst = '';
+            let rowNumLast = '';
             let lastCol = '';
             let firstCol = '';
             try {
                 const splitRange = opt.range.split(':');
                 Array.from(splitRange[0]).forEach(letter => {
-                    const notNumCheck = isNaN(parseInt(letter));
-                    if (notNumCheck) {
+                    const letterNum = parseInt(letter);
+                    if (isNaN(letterNum)) {
                         firstCol += letter;
+                    } else {
+                        rowNumFirst += letter;
                     }
                 });
                 Array.from(splitRange[1]).forEach(letter => {
@@ -65,7 +68,7 @@ class ChartTool {
                     if (isNaN(letterNum)) {
                         lastCol += letter;
                     } else {
-                        rowNum += letter;
+                        rowNumLast += letter;
                     }
                 });
             }
@@ -79,19 +82,19 @@ class ChartTool {
             // for (let i = 1; i < parseInt(rowNum); i++) {
                 const data = JSON.parse(JSON.stringify(ser));
                 let d = data[0] || data;
-                d['c:idx'] = { $: { val: parseInt(rowNum) - 1 } };
-                d['c:order'] = { $: { val: parseInt(rowNum) - 1 } };
+                d['c:idx'] = { $: { val: parseInt(rowNumLast) - 1 } };
+                d['c:order'] = { $: { val: parseInt(rowNumLast) - 1 } };
                 if (opt.type !== 'scatter') {
-                    d['c:cat']['c:strRef']['c:f'] = sheetName + `!$${firstCol}$2:$${firstCol}$${rowNum}`;
-                    d['c:val']['c:numRef']['c:f'] = sheetName + `!$${lastCol}$2:$${lastCol}$${rowNum}`;
+                    d['c:cat']['c:strRef']['c:f'] = sheetName + `!$${firstCol}$${rowNumFirst}:$${firstCol}$${rowNumLast}`;
+                    d['c:val']['c:numRef']['c:f'] = sheetName + `!$${lastCol}$${rowNumFirst}:$${lastCol}$${rowNumLast}`;
                     if (opt.hasOwnProperty('data')) {
                         d['c:cat']['c:strRef']['c:strCache'] = this.buildCache(opt['data'][0], opt.labels);
-                        d['c:val']['c:numRef']['c:numCache'] = this.buildCache(opt['data'][parseInt(rowNum)], opt.labels);
+                        d['c:val']['c:numRef']['c:numCache'] = this.buildCache(opt['data'][parseInt(rowNumLast)], opt.labels);
                     }
                 }
                 else {
-                    d['c:xVal']['c:numRef']['c:f'] = sheetName + `!$${firstCol}$2:$${firstCol}$${rowNum}`;
-                    d['c:yVal']['c:numRef']['c:f'] = sheetName + `!$${lastCol}$2:$${lastCol}$${rowNum}`;
+                    d['c:xVal']['c:numRef']['c:f'] = sheetName + `!$${firstCol}$${rowNumFirst}:$${firstCol}$${rowNumLast}`;
+                    d['c:yVal']['c:numRef']['c:f'] = sheetName + `!$${lastCol}$${rowNumFirst}:$${lastCol}$${rowNumLast}`;
                 }
                 if (opt.type === 'line') {
                     d['c:spPr']['a:ln'].$.w = opt.lineWidth || 30000;
@@ -104,7 +107,7 @@ class ChartTool {
                 if (opt.labels) {
                     d['c:tx'] = {
                         'c:strRef': {
-                            'c:f': sheetName + `!$A$${parseInt(rowNum) + 1}`
+                            'c:f': sheetName + `!$A$${parseInt(rowNumLast) + 1}`
                         }
                     };
                     if (opt.hasOwnProperty('data')) {
@@ -112,7 +115,7 @@ class ChartTool {
                             'c:ptCount': { $: { val: 1 } },
                             'c:pt': {
                                 $: { idx: 0 },
-                                'c:v': opt['data'][parseInt(rowNum)][0]
+                                'c:v': opt['data'][parseInt(rowNumLast)][0]
                             }
                         };
                     }
