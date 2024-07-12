@@ -94,7 +94,7 @@ class ChartTool {
                 d['c:xVal']['c:numRef']['c:f'] = sheetName + `!$${firstCol}$${rowNumFirst}:$${firstCol}$${rowNumLast}`;
                 d['c:yVal']['c:numRef']['c:f'] = sheetName + `!$${lastCol}$${rowNumFirst}:$${lastCol}$${rowNumLast}`;
             }
-            if ((opt.type === 'line') || (opt.type === 'scatter')) {
+            if (opt.type === 'line') {
                 d['c:spPr']['a:ln'].$.w = opt.lineWidth || 30000;
             }
             if (d['c:marker'] && (opt === null || opt === void 0 ? void 0 : opt.marker) && ((opt.type === 'line') || (opt.type === 'scatter'))) {
