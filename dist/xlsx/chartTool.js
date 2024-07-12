@@ -78,60 +78,57 @@ class ChartTool {
             }
             const ser = Object.assign({}, readChart['c:chartSpace']['c:chart']['c:plotArea'][chartType]['c:ser']);
             readChart['c:chartSpace']['c:chart']['c:plotArea'][chartType]['c:ser'] = [];
-            // delete readChart['c:chartSpace']['c:chart']['c:plotArea']['c:layout']
-            // for (let i = 1; i < parseInt(rowNum); i++) {
-                const data = JSON.parse(JSON.stringify(ser));
-                let d = data[0] || data;
-                d['c:idx'] = { $: { val: parseInt(rowNumLast) - 1 } };
-                d['c:order'] = { $: { val: parseInt(rowNumLast) - 1 } };
-                if (opt.type !== 'scatter') {
-                    d['c:cat']['c:strRef']['c:f'] = sheetName + `!$${firstCol}$${rowNumFirst}:$${firstCol}$${rowNumLast}`;
-                    d['c:val']['c:numRef']['c:f'] = sheetName + `!$${lastCol}$${rowNumFirst}:$${lastCol}$${rowNumLast}`;
-                    if (opt.hasOwnProperty('data')) {
-                        d['c:cat']['c:strRef']['c:strCache'] = this.buildCache(opt['data'][0], opt.labels);
-                        d['c:val']['c:numRef']['c:numCache'] = this.buildCache(opt['data'][parseInt(rowNumLast)], opt.labels);
+            const data = JSON.parse(JSON.stringify(ser));
+            let d = data[0] || data;
+            d['c:idx'] = { $: { val: parseInt(rowNumLast) - 1 } };
+            d['c:order'] = { $: { val: parseInt(rowNumLast) - 1 } };
+            if (opt.type !== 'scatter') {
+                d['c:cat']['c:strRef']['c:f'] = sheetName + `!$${firstCol}$${rowNumFirst}:$${firstCol}$${rowNumLast}`;
+                d['c:val']['c:numRef']['c:f'] = sheetName + `!$${lastCol}$${rowNumFirst}:$${lastCol}$${rowNumLast}`;
+                if (opt.hasOwnProperty('data')) {
+                    d['c:cat']['c:strRef']['c:strCache'] = this.buildCache(opt['data'][0], opt.labels);
+                    d['c:val']['c:numRef']['c:numCache'] = this.buildCache(opt['data'][parseInt(rowNumLast)], opt.labels);
+                }
+            }
+            else {
+                d['c:xVal']['c:numRef']['c:f'] = sheetName + `!$${firstCol}$${rowNumFirst}:$${firstCol}$${rowNumLast}`;
+                d['c:yVal']['c:numRef']['c:f'] = sheetName + `!$${lastCol}$${rowNumFirst}:$${lastCol}$${rowNumLast}`;
+            }
+            if ((opt.type === 'line') || (opt.type === 'scatter')) {
+                d['c:spPr']['a:ln'].$.w = opt.lineWidth || 30000;
+            }
+            if (d['c:marker'] && (opt === null || opt === void 0 ? void 0 : opt.marker) && ((opt.type === 'line') || (opt.type === 'scatter'))) {
+                d['c:marker']['c:size'].$.val = ((_a = opt === null || opt === void 0 ? void 0 : opt.marker) === null || _a === void 0 ? void 0 : _a.size) || '4';
+                d['c:marker']['c:symbol'].$.val = ((_b = opt === null || opt === void 0 ? void 0 : opt.marker) === null || _b === void 0 ? void 0 : _b.shape) || 'circle';
+                delete d['c:marker']['c:spPr']['a:noFill'];
+            }
+            if (opt.labels) {
+                d['c:tx'] = {
+                    'c:strRef': {
+                        'c:f': sheetName + `!$${firstCol}$${parseInt(rowNumFirst) - 1}`
                     }
-                }
-                else {
-                    d['c:xVal']['c:numRef']['c:f'] = sheetName + `!$${firstCol}$${rowNumFirst}:$${firstCol}$${rowNumLast}`;
-                    d['c:yVal']['c:numRef']['c:f'] = sheetName + `!$${lastCol}$${rowNumFirst}:$${lastCol}$${rowNumLast}`;
-                }
-                if (opt.type === 'line') {
-                    d['c:spPr']['a:ln'].$.w = opt.lineWidth || 30000;
-                }
-                if (d['c:marker'] && (opt === null || opt === void 0 ? void 0 : opt.marker) && (opt.type === 'line')) {
-                    d['c:marker']['c:size'].$.val = ((_a = opt === null || opt === void 0 ? void 0 : opt.marker) === null || _a === void 0 ? void 0 : _a.size) || '4';
-                    d['c:marker']['c:symbol'].$.val = ((_b = opt === null || opt === void 0 ? void 0 : opt.marker) === null || _b === void 0 ? void 0 : _b.shape) || 'circle';
-                    delete d['c:marker']['c:spPr']['a:noFill'];
-                }
-                if (opt.labels) {
-                    d['c:tx'] = {
-                        'c:strRef': {
-                            'c:f': sheetName + `!$${firstCol}$${parseInt(rowNumFirst) - 1}`
+                };
+                if (opt.hasOwnProperty('data')) {
+                    d['c:tx']['c:strRef']['c:strCache'] = {
+                        'c:ptCount': { $: { val: 1 } },
+                        'c:pt': {
+                            $: { idx: 0 },
+                            'c:v': opt['data'][parseInt(rowNumLast)][0]
                         }
                     };
-                    if (opt.hasOwnProperty('data')) {
-                        d['c:tx']['c:strRef']['c:strCache'] = {
-                            'c:ptCount': { $: { val: 1 } },
-                            'c:pt': {
-                                $: { idx: 0 },
-                                'c:v': opt['data'][parseInt(rowNumLast)][0]
-                            }
-                        };
-                    }
                 }
-                else {
-                    delete d['c:tx'];
+            }
+            else {
+                delete d['c:tx'];
+            }
+            readChart['c:chartSpace']['c:chart']['c:plotArea'][chartType]['c:ser'].push(d);
+            if (!!readChart['c:chartSpace']['c:chart']['c:plotArea']['c:valAx'] && opt.type !== 'scatter') {
+                readChart['c:chartSpace']['c:chart']['c:plotArea']['c:valAx']['c:majorUnit'] = {};
+                readChart['c:chartSpace']['c:chart']['c:plotArea']['c:valAx']['c:minorUnit'] = {};
+                if (readChart['c:chartSpace']['c:chart']['c:legend']['c:layout']) {
+                    delete readChart['c:chartSpace']['c:chart']['c:legend']['c:layout'];
                 }
-                readChart['c:chartSpace']['c:chart']['c:plotArea'][chartType]['c:ser'].push(d);
-                if (!!readChart['c:chartSpace']['c:chart']['c:plotArea']['c:valAx'] && opt.type !== 'scatter') {
-                    readChart['c:chartSpace']['c:chart']['c:plotArea']['c:valAx']['c:majorUnit'] = {};
-                    readChart['c:chartSpace']['c:chart']['c:plotArea']['c:valAx']['c:minorUnit'] = {};
-                    if (readChart['c:chartSpace']['c:chart']['c:legend']['c:layout']) {
-                        delete readChart['c:chartSpace']['c:chart']['c:legend']['c:layout'];
-                    }
-                }
-            // }
+            }
             return readChart;
         };
         this.buildCache = (rowData, labels) => {
